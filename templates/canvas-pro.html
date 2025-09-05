@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="ur" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urdu Canvas Pro - Professional Design Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Load comprehensive Urdu/Arabic fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lalezar&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rakkas&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lateef:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gulzar&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mirza:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8f9fa;
+            height: 100vh;
+            overflow: hidden;
+            color: #2d3748;
+        }
+
+        .canva-layout {
+            display: grid;
+            grid-template-areas: 
+                "header header header"
+                "sidebar canvas properties";
+            grid-template-columns: 300px 1fr 340px;
+            grid-template-rows: 70px 1fr;
+            height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            grid-area: header;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 100;
+            position: relative;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-tools {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .header-btn {
+            padding: 10px 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+        }
+
+        .header-btn.primary {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            border-color: rgba(255,255,255,0.9);
+        }
+
+        .header-btn.primary:hover {
+            background: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .header-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-section {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .sidebar-header {
+            padding: 20px 24px;
+            font-weight: 700;
+            font-size: 16px;
+            color: #2d3748;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-content {
+            padding: 24px;
+        }
+
+        /* Canvas Area */
+        .canvas-area {
+            grid-area: canvas;
+            background: linear-gradient(135deg, #f1f3f4 0%, #e8eaf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .canvas-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            position: relative;
+            max-width: calc(100% - 60px);
+            max-height: calc(100% - 60px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        #cardCanvas {
+            border-radius: 12px;
+            cursor: crosshair;
+            display: block;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .canvas-info {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Properties Panel */
+        .properties-panel {
+            grid-area: properties;
+            background: white;
+            border-left: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        .property-section {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .property-header {
+            padding: 20px 24px;
+            font-weight: 700;
+            font-size: 16px;
+            color: #2d3748;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .property-header:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        }
+
+        .property-content {
+            padding: 24px;
+            display: block;
+        }
+
+        .property-content.collapsed {
+            display: none;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: 'Noto Nastaliq Urdu', 'Amiri', Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .form-range {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            outline: none;
+            margin: 12px 0;
+        }
+
+        .form-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 3px solid #667eea;
+        }
+
+        .form-range::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 3px solid #667eea;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .range-value {
+            display: inline-block;
+            min-width: 50px;
+            text-align: center;
+            font-size: 13px;
+            color: #667eea;
+            font-weight: 700;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .color-input {
+            width: 100%;
+            height: 50px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .color-input:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .color-input::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .color-input::-webkit-color-swatch {
+            border: none;
+            border-radius: 8px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: white;
+            color: #4a5568;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #f7fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .btn.primary:hover {
+            background: linear-gradient(135deg, #5a67d8, #6b46c1);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            border-color: #48bb78;
+        }
+
+        .btn.secondary:hover {
+            background: linear-gradient(135deg, #38a169, #2f855a);
+            box-shadow: 0 12px 35px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+            border-color: #f56565;
+        }
+
+        .btn.danger:hover {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            box-shadow: 0 12px 35px rgba(245, 101, 101, 0.4);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+
+        /* Templates */
+        .template-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .template-btn {
+            padding: 12px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #4a5568;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-family: 'Noto Nastaliq Urdu', Arial, sans-serif;
+            font-weight: 600;
+        }
+
+        .template-btn:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Font Preview */
+        .font-option {
+            font-family: 'Noto Nastaliq Urdu', Arial, sans-serif;
+            padding: 12px 16px;
+            font-size: 14px;
+        }
+
+        .font-noto { font-family: 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-amiri { font-family: 'Amiri', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-lalezar { font-family: 'Lalezar', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-playpen { font-family: 'Playpen Sans', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-rakkas { font-family: 'Rakkas', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-lateef { font-family: 'Lateef', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-aref { font-family: 'Aref Ruqaa', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-gulzar { font-family: 'Gulzar', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-mirza { font-family: 'Mirza', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-marhey { font-family: 'Marhey', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-scheherazade { font-family: 'Scheherazade New', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-reem { font-family: 'Reem Kufi', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-cairo { font-family: 'Cairo', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-tajawal { font-family: 'Tajawal', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-ibm { font-family: 'IBM Plex Arabic', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+        .font-markazi { font-family: 'Markazi Text', 'Noto Nastaliq Urdu', Arial, sans-serif; }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .canva-layout {
+                grid-template-columns: 280px 1fr 300px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .canva-layout {
+                grid-template-columns: 260px 1fr 280px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .canva-layout {
+                grid-template-areas: 
+                    "header header"
+                    "sidebar canvas";
+                grid-template-columns: 280px 1fr;
+            }
+            
+            .properties-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .canva-layout {
+                grid-template-areas: 
+                    "header"
+                    "canvas";
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 70px;
+                height: calc(100vh - 70px);
+                z-index: 200;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Scrollbar Styling */
+        .sidebar::-webkit-scrollbar,
+        .properties-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track,
+        .properties-panel::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb,
+        .properties-panel::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover,
+        .properties-panel::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a67d8, #6b46c1);
+        }
+
+        /* Loading and notifications */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            color: white;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Beautiful animations */
+        .slide-in {
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Success messages */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+            z-index: 1001;
+            animation: slideInRight 0.3s ease-out;
+            font-weight: 600;
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            box-shadow: 0 8px 25px rgba(245, 101, 101, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="canva-layout">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <span>🎨</span>
+                    اردو کینوس پرو
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+                <div class="header-tools">
+                    <button id="undoBtn" class="header-btn" title="Undo (Ctrl+Z)">
+                        <span>↶</span> Undo
+                    </button>
+                    <button id="redoBtn" class="header-btn" title="Redo (Ctrl+Y)">
+                        <span>↷</span> Redo
+                    </button>
+                    <button id="clearBtn" class="header-btn" title="Clear All">
+                        <span>🗑️</span> Clear
+                    </button>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="exportJpg" class="header-btn secondary">
+                    <span>📷</span> Export JPG
+                </button>
+                <button id="exportPdf" class="header-btn primary">
+                    <span>📄</span> Export PDF
+                </button>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-header">
+                    <span>🔧</span> Tools
+                </div>
+                <div class="sidebar-content">
+                    <div class="btn-group">
+                        <button id="addTextBtn" class="btn primary btn-small">
+                            ➕ Add Text
+                        </button>
+                        <button id="selectBtn" class="btn btn-small">
+                            👆 Select
+                        </button>
+                        <button id="deleteBtn" class="btn danger btn-small">
+                            🗑️ Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-header">
+                    <span>📐</span> Canvas Size
+                </div>
+                <div class="sidebar-content">
+                    <div class="form-group">
+                        <label class="form-label">Width (mm)</label>
+                        <input type="number" id="cardWidth" class="form-input" value="100" min="50" max="300">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Height (mm)</label>
+                        <input type="number" id="cardHeight" class="form-input" value="70" min="50" max="300">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Aspect Ratio</label>
+                        <select id="aspectRatio" class="form-select">
+                            <option value="custom">Custom</option>
+                            <option value="16:9">16:9 Widescreen</option>
+                            <option value="4:3">4:3 Standard</option>
+                            <option value="1:1">1:1 Square</option>
+                            <option value="3:4">3:4 Portrait</option>
+                            <option value="5:7">5:7 Photo</option>
+                            <option value="21:29.7">A4 Portrait</option>
+                            <option value="29.7:21">A4 Landscape</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Background Color</label>
+                        <input type="color" id="backgroundColor" class="color-input" value="#FFFFFF">
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Canvas Area -->
+        <main class="canvas-area">
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <canvas id="cardCanvas"></canvas>
+                    <div class="canvas-info">
+                        <span id="previewDimensions">100mm × 70mm</span>
+                        <span> | Double-click to add text • Drag to move • Corners to resize</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Properties Panel -->
+        <aside class="properties-panel">
+            <div class="property-section">
+                <div class="property-header">
+                    <span>✏️ Text Content</span>
+                    <span>📝</span>
+                </div>
+                <div class="property-content">
+                    <div class="form-group">
+                        <label class="form-label">Text</label>
+                        <textarea id="textInput" class="form-textarea" placeholder="یہاں اردو متن لکھیں...">السلام علیکم
+یہ جدید کینوس ایڈیٹر ہے</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="property-section">
+                <div class="property-header">
+                    <span>🎨 Typography</span>
+                    <span>📚</span>
+                </div>
+                <div class="property-content">
+                    <div class="form-group">
+                        <label class="form-label">Font Family</label>
+                        <select id="fontFamily" class="form-select">
+                            <option value="Noto Nastaliq Urdu" class="font-noto">Noto Nastaliq Urdu - نوٹو نستعلیق</option>
+                            <option value="Amiri" class="font-amiri">Amiri - أميري</option>
+                            <option value="Lalezar" class="font-lalezar">Lalezar - لالہ زار</option>
+                            <option value="Playpen Sans" class="font-playpen">Playpen Sans - پلے پین</option>
+                            <option value="Rakkas" class="font-rakkas">Rakkas - رقاص</option>
+                            <option value="Lateef" class="font-lateef">Lateef - لطیف</option>
+                            <option value="Aref Ruqaa" class="font-aref">Aref Ruqaa - عارف رقعہ</option>
+                            <option value="Gulzar" class="font-gulzar">Gulzar - گلزار</option>
+                            <option value="Mirza" class="font-mirza">Mirza - مرزا</option>
+                            <option value="Marhey" class="font-marhey">Marhey - مرحی</option>
+                            <option value="Scheherazade New" class="font-scheherazade">Scheherazade New - شہرزاد</option>
+                            <option value="Reem Kufi" class="font-reem">Reem Kufi - ریم کوفی</option>
+                            <option value="Cairo" class="font-cairo">Cairo - قاہرہ</option>
+                            <option value="Tajawal" class="font-tajawal">Tajawal - تجوال</option>
+                            <option value="IBM Plex Arabic" class="font-ibm">IBM Plex Arabic</option>
+                            <option value="Markazi Text" class="font-markazi">Markazi Text - مرکزی</option>
+                            <option value="Arial">Arial</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Font Size</label>
+                        <input type="range" id="fontSize" class="form-range" min="8" max="200" value="24">
+                        <span id="fontSizeValue" class="range-value">24px</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Font Weight</label>
+                        <select id="fontWeight" class="form-select">
+                            <option value="300">Light</option>
+                            <option value="400" selected>Regular</option>
+                            <option value="500">Medium</option>
+                            <option value="600">Semibold</option>
+                            <option value="700">Bold</option>
+                            <option value="800">Extra Bold</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Font Color</label>
+                        <input type="color" id="fontColor" class="color-input" value="#000000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Text Alignment</label>
+                        <select id="alignment" class="form-select">
+                            <option value="right">Right (اردو)</option>
+                            <option value="center">Center</option>
+                            <option value="left">Left</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="property-section">
+                <div class="property-header">
+                    <span>🔄 Transform</span>
+                    <span>🎯</span>
+                </div>
+                <div class="property-content">
+                    <div class="form-group">
+                        <label class="form-label">Rotation</label>
+                        <input type="range" id="rotation" class="form-range" min="-180" max="180" value="0">
+                        <span id="rotationValue" class="range-value">0°</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Line Spacing</label>
+                        <input type="range" id="lineSpacing" class="form-range" min="0" max="100" value="8">
+                        <span id="lineSpacingValue" class="range-value">8px</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Word Spacing</label>
+                        <input type="range" id="wordSpacing" class="form-range" min="0" max="50" value="0">
+                        <span id="wordSpacingValue" class="range-value">0px</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="property-section">
+                <div class="property-header">
+                    <span>🎪 Effects</span>
+                    <span>✨</span>
+                </div>
+                <div class="property-content">
+                    <div class="form-group">
+                        <label class="form-label">Text Shadow</label>
+                        <input type="color" id="shadowColor" class="color-input" value="#000000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Shadow Blur</label>
+                        <input type="range" id="shadowBlur" class="form-range" min="0" max="20" value="0">
+                        <span id="shadowBlurValue" class="range-value">0px</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Opacity</label>
+                        <input type="range" id="opacity" class="form-range" min="0" max="100" value="100">
+                        <span id="opacityValue" class="range-value">100%</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Processing your professional design...</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/canvas-editor-pro.js') }}"></script>
+</body>
+</html>

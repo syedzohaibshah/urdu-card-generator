@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Urdu Card Generator</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>اردو کارڈ جینریٹر</h1>
+        <p>Urdu Card Generator - High Quality Printable Cards</p>
+        <div style="margin-top: 15px;">
+          <a href="/canvas" style="background: #667eea; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 500; margin-right: 10px;">🎨 Canvas Editor (Better Urdu Support)</a>
+          <small style="color: #666;">← Try this for proper Urdu text rendering</small>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <div class="controls-panel">
+          <div class="control-section">
+            <h3>Text Content</h3>
+            <textarea id="textInput" placeholder="یہاں اردو متن لکھیں...">
+السلام علیکم
+یہ اردو کارڈ جینریٹر ہے
+آپ یہاں اپنا متن لکھ سکتے ہیں
+اور اعلیٰ معیار کی تصاویر اور PDF بنا سکتے ہیں</textarea
+            >
+            <div class="text-templates">
+              <small>Quick templates:</small>
+              <button
+                type="button"
+                class="template-btn"
+                data-template="السلام علیکم ورحمۃ اللہ وبرکاتہ"
+              >
+                Greeting
+              </button>
+              <button
+                type="button"
+                class="template-btn"
+                data-template="بسم اللہ الرحمن الرحیم"
+              >
+                Bismillah
+              </button>
+              <button
+                type="button"
+                class="template-btn"
+                data-template="اللہم صل علی محمد وعلی آل محمد"
+              >
+                Durood
+              </button>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3>Card Dimensions</h3>
+            <div class="form-row">
+              <label for="cardWidth">Width (mm):</label>
+              <input
+                type="number"
+                id="cardWidth"
+                value="100"
+                min="50"
+                max="300"
+              />
+            </div>
+            <div class="form-row">
+              <label for="cardHeight">Height (mm):</label>
+              <input
+                type="number"
+                id="cardHeight"
+                value="70"
+                min="50"
+                max="300"
+              />
+            </div>
+            <div class="form-row">
+              <label for="aspectRatio">Aspect Ratio:</label>
+              <select id="aspectRatio">
+                <option value="custom">Custom</option>
+                <option value="16:9">16:9</option>
+                <option value="4:3">4:3</option>
+                <option value="1:1">1:1 (Square)</option>
+                <option value="3:4">3:4 (Portrait)</option>
+                <option value="5:7">5:7 (Photo)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3>Typography</h3>
+            <div class="form-row">
+              <label for="fontFamily">Font:</label>
+              <select id="fontFamily">
+                <option value="Noto Nastaliq Urdu">Noto Nastaliq Urdu</option>
+                <option value="Jameel Noori Nastaleeq">
+                  Jameel Noori Nastaleeq
+                </option>
+                <option value="Alvi Nastaleeq">Alvi Nastaleeq</option>
+                <option value="Nafees Web Naskh">Nafees Web Naskh</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="fontSize">Font Size:</label>
+              <input type="range" id="fontSize" min="8" max="72" value="16" />
+              <span id="fontSizeValue">16px</span>
+            </div>
+            <div class="form-row">
+              <label for="fontColor">Font Color:</label>
+              <input type="color" id="fontColor" value="#000000" />
+            </div>
+            <div class="form-row">
+              <label for="alignment">Alignment:</label>
+              <select id="alignment">
+                <option value="right">Right (اردو)</option>
+                <option value="center">Center</option>
+                <option value="left">Left</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3>Layout</h3>
+            <div class="form-row">
+              <label for="backgroundColor">Background Color:</label>
+              <input type="color" id="backgroundColor" value="#FFFFFF" />
+            </div>
+            <div class="form-row">
+              <label for="lineSpacing">Line Spacing:</label>
+              <input type="range" id="lineSpacing" min="0" max="20" value="5" />
+              <span id="lineSpacingValue">5px</span>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3>Export Options</h3>
+                        <div class="export-buttons">
+                <button id="previewBtn" class="btn primary">🔄 Preview Card</button>
+                <button id="exportJpg" class="btn secondary">📷 Export JPG</button>
+                <button id="exportPdf" class="btn secondary">📄 Export PDF</button>
+                <a href="/canvas" class="btn">🎨 Canvas Editor</a>
+                <a href="/canvas-pro" class="btn primary">✨ Pro Canvas Editor</a>
+            </div>
+            <div class="quality-info">
+              <small>High quality 300 DPI output for printing</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-panel">
+          <div class="preview-container">
+            <div id="cardPreview" class="card-preview">
+              <div class="preview-placeholder">
+                Click "Preview" to see your card
+              </div>
+            </div>
+            <div class="preview-info">
+              <span id="previewDimensions">100mm × 70mm</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>Support for Urdu fonts and high-quality printable output</p>
+      </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none">
+      <div class="loading-spinner"></div>
+      <p>Processing...</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

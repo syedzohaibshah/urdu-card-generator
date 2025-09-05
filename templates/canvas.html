@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Urdu Card Generator - Canvas Editor</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap");
+
+      .canvas-editor {
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        background: #f9f9f9;
+        position: relative;
+        overflow: hidden;
+        cursor: crosshair;
+      }
+
+      .text-element {
+        position: absolute;
+        cursor: move;
+        user-select: none;
+        border: 2px dashed transparent;
+        min-width: 20px;
+        min-height: 20px;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        font-family: "Noto Nastaliq Urdu", "Amiri", Arial, sans-serif;
+        direction: rtl;
+        text-align: right;
+      }
+
+      .text-element.selected {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+      }
+
+      .text-element .resize-handle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: #667eea;
+        border: 1px solid white;
+        border-radius: 50%;
+      }
+
+      .resize-handle.se {
+        bottom: -4px;
+        right: -4px;
+        cursor: se-resize;
+      }
+      .resize-handle.ne {
+        top: -4px;
+        right: -4px;
+        cursor: ne-resize;
+      }
+      .resize-handle.sw {
+        bottom: -4px;
+        left: -4px;
+        cursor: sw-resize;
+      }
+      .resize-handle.nw {
+        top: -4px;
+        left: -4px;
+        cursor: nw-resize;
+      }
+
+      .rotate-handle {
+        position: absolute;
+        top: -20px;
+        right: 50%;
+        transform: translateX(50%);
+        width: 16px;
+        height: 16px;
+        background: #ff6b6b;
+        border: 2px solid white;
+        border-radius: 50%;
+        cursor: grab;
+      }
+
+      .canvas-tools {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .tool-group {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        padding: 8px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+      }
+
+      .tool-btn {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background: white;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s;
+      }
+
+      .tool-btn:hover,
+      .tool-btn.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+      }
+
+      .font-selector {
+        font-family: "Noto Nastaliq Urdu", "Amiri", Arial, sans-serif;
+      }
+
+      .urdu-preview {
+        font-family: "Noto Nastaliq Urdu", "Amiri", Arial, sans-serif;
+        direction: rtl;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1 class="urdu-preview">اردو کینوس ایڈیٹر</h1>
+        <p>Advanced Urdu Card Generator with Canvas Editor</p>
+      </header>
+
+      <div class="main-content">
+        <div class="controls-panel">
+          <div class="control-section">
+            <h3>Canvas Tools</h3>
+            <div class="canvas-tools">
+              <div class="tool-group">
+                <button id="addTextBtn" class="tool-btn active">
+                  ➕ Add Text
+                </button>
+                <button id="selectBtn" class="tool-btn">👆 Select</button>
+                <button id="deleteBtn" class="tool-btn">🗑️ Delete</button>
+              </div>
+              <div class="tool-group">
+                <button id="undoBtn" class="tool-btn">↶ Undo</button>
+                <button id="redoBtn" class="tool-btn">↷ Redo</button>
+                <button id="clearBtn" class="tool-btn">🗂️ Clear All</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3>Text Content</h3>
+            <textarea
+              id="textInput"
+              class="urdu-preview"
+              placeholder="یہاں اردو متن لکھیں..."
+            >
+السلام علیکم
+یہ کینوس ایڈیٹر ہے</textarea
+            >
+            <div class="text-templates">
+              <small>Quick templates:</small>
+              <button
+                type="button"
+                class="template-btn"
+                data-template="السلام علیکم ورحمۃ اللہ وبرکاتہ"
+              >
+                Greeting
+              </button>
+              <button
+                type="button"
+                class="template-btn"
+                data-template="بسم اللہ الرحمن الرحیم"
+              >
+                Bismillah
+              </button>
+              <button
+                type="button"
+                class="template-btn"
+                data-template="اللہم صل علی محمد وعلی آل محمد"
+              >
+                Durood
+              </button>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3>Card Dimensions</h3>
+            <div class="form-row">
+              <label for="cardWidth">Width (mm):</label>
+              <input
+                type="number"
+                id="cardWidth"
+                value="100"
+                min="50"
+                max="300"
+              />
+            </div>
+            <div class="form-row">
+              <label for="cardHeight">Height (mm):</label>
+              <input
+                type="number"
+                id="cardHeight"
+                value="70"
+                min="50"
+                max="300"
+              />
+            </div>
+            <div class="form-row">
+              <label for="aspectRatio">Aspect Ratio:</label>
+              <select id="aspectRatio">
+                <option value="custom">Custom</option>
+                <option value="16:9">16:9</option>
+                <option value="4:3">4:3</option>
+                <option value="1:1">1:1 (Square)</option>
+                <option value="3:4">3:4 (Portrait)</option>
+                <option value="5:7">5:7 (Photo)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3>Typography</h3>
+            <div class="form-row">
+              <label for="fontFamily">Font:</label>
+              <select id="fontFamily" class="font-selector">
+                <option value="Noto Nastaliq Urdu" class="urdu-preview">
+                  Noto Nastaliq Urdu
+                </option>
+                <option value="Amiri" class="urdu-preview">Amiri</option>
+                <option value="Arial" class="urdu-preview">Arial</option>
+                <option value="Times New Roman" class="urdu-preview">
+                  Times New Roman
+                </option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="fontSize">Font Size:</label>
+              <input type="range" id="fontSize" min="8" max="72" value="20" />
+              <span id="fontSizeValue">20px</span>
+            </div>
+            <div class="form-row">
+              <label for="fontColor">Font Color:</label>
+              <input type="color" id="fontColor" value="#000000" />
+            </div>
+            <div class="form-row">
+              <label for="alignment">Alignment:</label>
+              <select id="alignment">
+                <option value="right">Right (اردو)</option>
+                <option value="center">Center</option>
+                <option value="left">Left</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="rotation">Rotation:</label>
+              <input
+                type="range"
+                id="rotation"
+                min="-180"
+                max="180"
+                value="0"
+              />
+              <span id="rotationValue">0°</span>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3>Layout</h3>
+            <div class="form-row">
+              <label for="backgroundColor">Background Color:</label>
+              <input type="color" id="backgroundColor" value="#FFFFFF" />
+            </div>
+            <div class="form-row">
+              <label for="lineSpacing">Line Spacing:</label>
+              <input type="range" id="lineSpacing" min="0" max="20" value="5" />
+              <span id="lineSpacingValue">5px</span>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3>Export Options</h3>
+            <div class="export-buttons">
+              <button id="previewBtn" class="btn primary">
+                🔄 Update Preview
+              </button>
+              <button id="exportJpg" class="btn secondary">
+                📷 Export JPG
+              </button>
+              <button id="exportPdf" class="btn secondary">
+                📄 Export PDF
+              </button>
+            </div>
+            <div class="quality-info">
+              <small>High quality 300 DPI output for printing</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-panel">
+          <div class="preview-container">
+            <div id="canvasContainer" style="width: 100%; max-width: 500px">
+              <canvas id="cardCanvas" class="canvas-editor"></canvas>
+            </div>
+            <div class="preview-info">
+              <span id="previewDimensions">100mm × 70mm</span>
+              <span> | Click to add text, drag to move, corners to resize</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p class="urdu-preview">
+          اردو فونٹس اور اعلیٰ معیار کی پرنٹنگ کی سپورٹ
+        </p>
+      </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none">
+      <div class="loading-spinner"></div>
+      <p>Processing...</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/canvas-editor.js') }}"></script>
+  </body>
+</html>
