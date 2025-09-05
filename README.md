@@ -30,7 +30,7 @@ A modern, professional-grade web application for creating beautiful Urdu cards, 
 
 ## 🚀 **Live Demo**
 
-[**🌟 Try Urdu Canvas Pro Live**](YOUR_DEPLOYMENT_URL_HERE)
+[**🌟 Try Urdu Canvas Pro Live**](https://web-production-a32d7.up.railway.app/canvas-pro)
 
 ## 📦 **Installation**
 
@@ -42,8 +42,8 @@ A modern, professional-grade web application for creating beautiful Urdu cards, 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/write-urdu.git
-   cd write-urdu
+   git clone https://github.com/syedzohaibshah/urdu-card-generator.git
+   cd urdu-card-generator
    ```
 
 2. **Create virtual environment**
@@ -68,6 +68,21 @@ A modern, professional-grade web application for creating beautiful Urdu cards, 
    ```
 
 ## 🌐 **Deployment**
+
+### Railway Deployment (Recommended ⭐)
+
+1. **Go to Railway**
+   - Visit [railway.app](https://railway.app)
+   - Sign up with GitHub
+
+2. **Deploy from GitHub**
+   - Click "Deploy from GitHub repo"
+   - Select `syedzohaibshah/urdu-card-generator`
+   - Railway auto-detects Flask and deploys!
+
+3. **Access your app**
+   - Railway provides a URL like: `https://your-app.up.railway.app`
+   - Add `/canvas-pro` to access the main interface
 
 ### Heroku Deployment
 
@@ -195,8 +210,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🐛 **Issues & Support**
 
 Found a bug or need help? 
-- [Open an Issue](https://github.com/YOUR_USERNAME/write-urdu/issues)
-- [Discussions](https://github.com/YOUR_USERNAME/write-urdu/discussions)
+- [Open an Issue](https://github.com/syedzohaibshah/urdu-card-generator/issues)
+- [Discussions](https://github.com/syedzohaibshah/urdu-card-generator/discussions)
 
 ## 🌟 **Show Your Support**
 
